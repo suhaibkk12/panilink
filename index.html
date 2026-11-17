@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta name="theme-color" content="#123d4d">
+<title>PaaniLink - Water Tanker Booking</title>
+<style>
+:root{
+  --bg-1:#f3fbff;
+  --bg-2:#edf9f6;
+  --panel:#ffffff;
+  --panel-2:#f7fcff;
+  --ink:#183847;
+  --muted:#4d6876;
+  --primary:#1f8bb9;
+  --primary-deep:#0d5d7e;
+  --secondary:#0ca5a5;
+  --accent:#f7b84b;
+  --accent-2:#ff8a65;
+  --success:#2f9e7b;
+  --danger:#e8625a;
+  --line:#dfeaf1;
+  --shadow:rgba(19,52,63,.12);
+  --glow:rgba(31,139,185,.18);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font:16px/1.5 "Segoe UI",system-ui,sans-serif;
+  background:linear-gradient(180deg,var(--bg-1) 0%, var(--bg-2) 100%);
+  color:var(--ink);
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  -webkit-tap-highlight-color:transparent;
+}
+header{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.75rem 1.2rem;
+  align-items:center;
+  justify-content:space-between;
+  padding:1rem 1.4rem;
+  background:linear-gradient(135deg,#0f2d3c 0%, #123d4d 35%, #1d6f8c 100%);
+  color:#fff;
+  box-shadow:0 16px 30px rgba(12,42,51,.18);
+  position:relative;
+  overflow:hidden;
+}
+header::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:radial-gradient(circle at top right, rgba(247,184,75,.28), transparent 30%);
+  pointer-events:none;
+}
+header > *{position:relative;z-index:1}
+header h1{margin:0;font:700 1.6rem Georgia,serif;letter-spacing:.03em}
+nav{display:flex;gap:.45rem;flex:1;flex-wrap:wrap}
+nav button,#who button{
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.12);
+  color:#fff;
+  padding:.52rem .9rem;
+  border-radius:999px;
+  cursor:pointer;
+  font:inherit;
+  transition:all .2s ease;
+}
+nav button:hover,#who button:hover{background:rgba(255,255,255,.12);transform:translateY(-1px)}
+nav button.on{
+  background:rgba(247,184,75,.18);
+  border-color:rgba(247,184,75,.6);
+  box-shadow:inset 0 0 0 1px rgba(247,184,75,.28);
+}
+main{max-width:1160px;margin:1.2rem auto;padding:0 1rem;display:grid;gap:1rem}
+.card{
+  background:linear-gradient(180deg, var(--panel) 0%, var(--panel-2) 100%);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:1rem;
+  box-shadow:0 10px 25px var(--shadow);
+}
+h2{margin:.2rem 0 .8rem;font-size:1.35rem;color:var(--primary-deep)}
+.row{display:flex;flex-wrap:wrap;gap:.75rem;align-items:flex-end}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.8rem}
+.login-card{width:min(100%,560px);margin:0 auto}
+.login-switch{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.35rem;padding:.3rem;margin-bottom:1rem;border:1px solid var(--line);border-radius:12px;background:#edf4f6}
+.login-switch button{min-width:0;border:0;border-radius:9px;padding:.65rem .8rem;background:transparent;color:var(--muted);font-weight:700;cursor:pointer}
+.login-switch button[aria-pressed="true"]{background:#fff;color:var(--primary-deep);box-shadow:0 2px 8px rgba(19,52,63,.12)}
+.login-card form{grid-template-columns:1fr}
+label{display:flex;flex-direction:column;font-size:.84rem;gap:.25rem;font-weight:700;color:var(--ink)}
+input,select,textarea,button{font:inherit}
+input,select,textarea{
+  padding:.75rem .8rem;
+  border:1px solid #bfd3dd;
+  border-radius:12px;
+  background:#fff;
+  min-width:0;
+  color:var(--ink);
+  box-shadow:inset 0 1px 2px rgba(19,52,63,.03);
+  font-size:16px;
+}
+button, .btn { min-height:44px; }
+:focus-visible{outline:3px solid rgba(247,184,75,.45);outline-offset:2px}
+.btn{
+  background:linear-gradient(135deg,var(--primary) 0%, var(--primary-deep) 100%);
+  color:#fff;border:0;padding:.7rem 1rem;border-radius:12px;cursor:pointer;min-height:42px;font-weight:700;
+  box-shadow:0 10px 20px rgba(17,101,136,.2);
+  transition:transform .18s ease, box-shadow .18s ease;
+}
+.btn:hover{transform:translateY(-1px)}
+.btn.alt{background:#fff;color:var(--ink);border:1px solid rgba(31,139,185,.35)}
+.btn.bad{background:linear-gradient(135deg,var(--danger) 0%, #d45a4d 100%)}
+.btn:disabled{opacity:.55;cursor:not-allowed;box-shadow:none;transform:none}
+.err{color:var(--danger);font-size:.85rem;min-height:1.1em;font-weight:600}
+.pill{padding:.18rem .7rem;border-radius:999px;background:#edf7ff;font-size:.78rem;font-weight:700;display:inline-block}
+.pill.Pending{background:#fff3d6;color:#946100}
+.pill.Failed,.pill.Rejected,.pill.Disputed,.pill.Cancelled{background:#fde7e4;color:#b75046}
+.pill.Delivered,.pill.Confirmed,.pill.Resolved{background:#e0f6ef;color:#1b7d5e}
+.pill.Approved,.pill.Assigned,.pill.Filled,.pill.Arrived,.pill.Available{background:#e4f6ff;color:#0d6a85}
+table{width:100%;border-collapse:collapse;font-size:.92rem}
+th,td{text-align:left;padding:.7rem .65rem;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:#f5fbfd;color:var(--primary-deep);font-size:.78rem;text-transform:uppercase;letter-spacing:.05em}
+.acts{display:flex;gap:.42rem;flex-wrap:wrap}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.75rem}
+.stat b{display:block;font-size:1.5rem;color:var(--primary-deep)}
+.bar{display:block;height:10px;background:#e7eff4;border-radius:999px;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--primary),var(--accent));border-radius:999px}
+#toast{position:fixed;bottom:1rem;left:50%;transform:translate(-50%,200%);background:#123b4d;color:#fff;padding:.75rem 1.2rem;border-radius:12px;transition:transform .2s;max-width:90vw;box-shadow:0 18px 34px rgba(18,59,77,.24)}
+#toast.show{transform:translate(-50%,0)}#toast.bad{background:linear-gradient(135deg,var(--danger),#ca4f42)}
+@media(max-width:700px){
+  header{padding: .85rem 1rem;}
+  nav{width:100%;justify-content:center}
+  #who{width:100%;display:flex;justify-content:center;align-items:center;gap:.5rem;flex-wrap:wrap}
+  table,thead,tbody,tr,td{display:block}thead{display:none}
+  tr{border:1px solid var(--line);border-radius:12px;margin-bottom:.8rem;padding:.55rem;background:#fff}
+  td{border:0;display:flex;justify-content:space-between;gap:.75rem;padding:.38rem .45rem}
+  td::before{content:attr(data-label);font-weight:700;color:var(--primary)}
+  .acts button{flex:1;min-height:52px;font-size:1.05rem}
+  .row>label,.row>button{flex:1 1 100%}
+  .card{padding:.9rem}
+  main{padding:0 .75rem}
+}
+@media(max-width:480px){
+  body{font-size:15px}
+  header h1{font-size:1.3rem}
+  nav button,#who button{padding:.5rem .75rem;font-size:.9rem}
+  .login-switch{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .grid{grid-template-columns:1fr}
+  .card{border-radius:14px}
+  .btn{width:100%}
+}
+@supports(padding:max(0px)){
+  body{padding-bottom:max(1rem, env(safe-area-inset-bottom));}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}#toast{transition:none}}
+</style>
+</head>
+<body>
+<header><h1>PaaniLink</h1><nav id="nav" aria-label="Main"></nav><div id="who"></div></header>
+<main id="main"></main>
+<div id="toast" role="status" aria-live="polite"></div>
+<script>
+/* =====================================================================
+   MOCK API  (replaces the real server for the frontend phase).
+   All app code below talks to it ONLY through fetch('/api/...').
+   Data is saved in localStorage. Failed requests roll back (snapshot).
+   ===================================================================== */
+const DEAD = ['Rejected', 'Cancelled', 'Failed'], LIVE = ['Assigned', 'Refilled', 'Filled', 'Arrived'];
+const E = (s, m) => { throw { s, m }; };
+const todayStr = () => new Date().toISOString().slice(0, 10);
+const buildDefaultDB = () => {
+  const u = (id, name, email, role, o = {}) => ({ id, name, email, password: 'pass123', role, cnic: '', phone: '', address: '', zone_id: null, hydrant_id: null, subsidy_status: 'none', subsidy_proof: '', monthly_limit: 0, ...o });
+  return {
+    seq: 100,
+    zones: [
+      { id: 1, name: 'Gulshan' },
+      { id: 2, name: 'Korangi' },
+      { id: 3, name: 'Clifton' },
+      { id: 4, name: 'Defence Housing Authority (DHA)' },
+      { id: 5, name: 'North Nazimabad' },
+      { id: 6, name: 'Nazimabad' },
+      { id: 7, name: 'Liaquatabad' },
+      { id: 8, name: 'Saddar' },
+      { id: 9, name: 'Lyari' },
+      { id: 10, name: 'Keamari' },
+      { id: 11, name: 'Malir' },
+      { id: 12, name: 'Landhi' },
+      { id: 13, name: 'Shah Faisal' },
+      { id: 14, name: 'Gulistan-e-Jauhar' },
+      { id: 15, name: 'Orangi Town' },
+      { id: 16, name: 'Baldia Town' },
+      { id: 17, name: 'Federal B Area' },
+      { id: 18, name: 'SITE' },
+      { id: 19, name: 'Model Colony' },
+      { id: 20, name: 'Surjani Town' },
+      { id: 21, name: 'Gadap Town' },
+      { id: 22, name: 'Mominabad' }
+    ],
+    hydrants: [{ id: 1, name: 'Hydrant Gulshan', daily_quota: 9000, open_hour: 6, close_hour: 20, available: 1, zones: [1] },
+               { id: 2, name: 'Hydrant Korangi', daily_quota: 12000, open_hour: 6, close_hour: 20, available: 1, zones: [2] }],
+    rates: [{ size: 1000, commercial: 1500, subsidised: 300 }, { size: 3000, commercial: 4000, subsidised: 800 }, { size: 6000, commercial: 7500, subsidised: 1500 }],
+    tankers: [{ id: 1, hydrant_id: 1, plate: 'KHI-101', size: 1000, available: 1 }, { id: 2, hydrant_id: 1, plate: 'KHI-103', size: 3000, available: 1 },
+              { id: 3, hydrant_id: 1, plate: 'KHI-106', size: 6000, available: 1 }, { id: 4, hydrant_id: 2, plate: 'KHI-203', size: 3000, available: 1 }],
+    users: [u(1, 'Admin', 'abd.67251@iqra.edu.pk', 'admin', { password: '12345' }), u(2, 'Officer Gulshan', 'officer@pl.pk', 'officer', { zone_id: 1 }),
+            u(3, 'Operator Gulshan', 'operator@pl.pk', 'operator', { hydrant_id: 1 }), u(4, 'Driver Ali', 'driver1@pl.pk', 'driver', { hydrant_id: 1 }),
+          u(5, 'Driver Bilal', 'driver2@pl.pk', 'driver', { hydrant_id: 1 })],
+    bookings: []
+  };
+};
+
+let DB = JSON.parse(localStorage.getItem('pl_db') || 'null');
+if (!DB || !DB.users || !DB.users.some(u => u.email === 'abd.67251@iqra.edu.pk')) {
+  DB = buildDefaultDB();
+  localStorage.setItem('pl_db', JSON.stringify(DB));
+  localStorage.removeItem('pl_token');
+}
+const removedCustomerIds = new Set(DB.users.filter(user => user.name === 'Sara Khan' && user.email === 'customer@pl.pk').map(user => user.id));
+if (removedCustomerIds.size) {
+  DB.users = DB.users.filter(user => !removedCustomerIds.has(user.id));
+  DB.bookings = DB.bookings.filter(booking => !removedCustomerIds.has(booking.customer_id));
+  const signedInId = Number(String(localStorage.getItem('pl_token') || '').replace(/^tok-/, ''));
+  if (removedCustomerIds.has(signedInId)) localStorage.removeItem('pl_token');
+}
+DB.seq = Math.max(Number(DB.seq) || 0, ...DB.users.map(u => Number(u.id) || 0));
+const seedRoleAccount = (email, name, role) => {
+  let user = DB.users.find(u => u.email === email);
+  if (!user) {
+    user = { id: ++DB.seq, name, email, password: '123', role, cnic: '', phone: '', address: '', zone_id: null, hydrant_id: 1, subsidy_status: 'none', subsidy_proof: '', monthly_limit: 0 };
+    DB.users.push(user);
+  } else Object.assign(user, { name, password: '123', role, hydrant_id: 1 });
+};
+seedRoleAccount('pani@driver.pk', 'PaaniLink Driver', 'driver');
+seedRoleAccount('pani@operator.pk', 'PaaniLink Operator', 'operator');
+DB.zones.forEach(zone => {
+  if (!(Number(zone.daily_quota) >= 1000)) zone.daily_quota = 10000;
+});
+const serviceableZoneIds = DB.zones.map(zone => zone.id);
+const totalZoneQuota = DB.zones.reduce((total, zone) => total + Number(zone.daily_quota), 0);
+DB.hydrants.forEach(hydrant => {
+  hydrant.zones = [...new Set([...(hydrant.zones || []), ...serviceableZoneIds])];
+  hydrant.daily_quota = Math.max(Number(hydrant.daily_quota) || 0, totalZoneQuota);
+});
+localStorage.setItem('pl_db', JSON.stringify(DB));
+const pub = ({ password, ...u }) => u;
+const owns = (u, b) => ({ customer: b.customer_id === u.id, officer: b.zone_id === u.zone_id, operator: b.hydrant_id === u.hydrant_id, driver: b.driver_id === u.id, admin: true })[u.role];
+const used = (hid, date) => DB.bookings.filter(b => b.hydrant_id === hid && b.date === date && !DEAD.includes(b.status)).reduce((s, b) => s + b.size, 0);
+const usedInZone = (zoneId, date) => DB.bookings.filter(b => b.zone_id === zoneId && b.date === date && !DEAD.includes(b.status)).reduce((s, b) => s + b.size, 0);
+const T = { cancel: [['customer'], ['Pending', 'Approved', 'Assigned'], 'Cancelled'], approve: [['officer'], ['Pending'], 'Approved'], reject: [['officer'], ['Pending'], 'Rejected'],
+  autoAssign: [['operator'], ['Pending'], 'Assigned'],
+  assign: [['operator'], ['Approved'], 'Assigned'], fill: [['operator'], ['Assigned'], 'Refilled'], confirmFill: [['driver'], ['Refilled'], 'Filled'], arrive: [['driver'], ['Filled'], 'Arrived'],
+  deliver: [['driver'], ['Arrived'], 'Delivered'], fail: [['driver'], ['Filled', 'Arrived'], 'Failed'],
+  confirm: [['customer'], ['Delivered'], 'Confirmed'], dispute: [['customer'], ['Delivered'], 'Disputed'], resolve: [['officer'], ['Disputed'], 'Resolved'] };
+
+// [method, path regex, allowed roles (null public, [] any), handler]
+const ROUTES = [
+  ['GET', /^\/meta$/, null, () => ({ zones: DB.zones, rates: DB.rates })],
+  ['POST', /^\/auth\/register$/, null, ({ body: b }) => {
+    const er = [];
+    if (!b.name || b.name.trim().length < 3) er.push('Name must be at least 3 characters');
+    if (!/^\S+@\S+\.\S+$/.test(b.email || '')) er.push('Valid email required');
+    if (!b.password || b.password.length < 6) er.push('Password must be at least 6 characters');
+    if (!/^\d{5}-\d{7}-\d$/.test(b.cnic || '')) er.push('CNIC format: 12345-1234567-1');
+    if (!/^03\d{2}-?\d{7}$/.test(b.phone || '')) er.push('Phone format: 0300-1234567');
+    if (!b.address || b.address.trim().length < 5) er.push('Address is required');
+    if (!DB.zones.some(z => z.id == b.zone_id)) er.push('Choose a valid zone');
+    if (er.length) E(400, er.join('. '));
+    if (DB.users.some(x => x.email === b.email.toLowerCase())) E(409, 'Email already registered');
+    DB.users.push({ id: ++DB.seq, name: b.name.trim(), email: b.email.toLowerCase(), password: b.password, role: 'customer', cnic: b.cnic, phone: b.phone, address: b.address.trim(), zone_id: +b.zone_id, hydrant_id: null, subsidy_status: 'none', subsidy_proof: '', monthly_limit: 0 });
+    return { ok: true };
+  }],
+  ['POST', /^\/auth\/login$/, null, ({ body: b }) => {
+    const u = DB.users.find(x => x.email === String(b.email || '').toLowerCase() && x.password === b.password);
+    if (!u) E(401, 'Wrong email or password');
+    return { token: 'tok-' + u.id, user: pub(u) };
+  }],
+  ['GET', /^\/me$/, [], ({ u }) => pub(u)],
+
+  ['POST', /^\/subsidy$/, ['customer'], ({ u, body }) => {
+    if ((body.proof || '').trim().length < 10) E(400, 'Describe your proof (at least 10 characters)');
+    if (['approved', 'pending'].includes(u.subsidy_status)) E(409, 'Application already ' + u.subsidy_status);
+    u.subsidy_status = 'pending'; u.subsidy_proof = body.proof.trim(); return { ok: true };
+  }],
+  ['GET', /^\/subsidy$/, ['officer'], ({ u }) => DB.users.filter(x => x.role === 'customer' && x.zone_id === u.zone_id && x.subsidy_status === 'pending').map(pub)],
+  ['PATCH', /^\/subsidy\/(\d+)$/, ['officer'], ({ u, m, body }) => {
+    const c = DB.users.find(x => x.id == m[1] && x.zone_id === u.zone_id && x.subsidy_status === 'pending');
+    if (!c) E(404, 'No pending application for this zone');
+    if (!['approved', 'rejected'].includes(body.decision)) E(400, 'Decision must be approved or rejected');
+    if (body.decision === 'approved' && !(+body.monthly_limit >= 1 && +body.monthly_limit <= 20)) E(400, 'Monthly limit must be 1 to 20');
+    c.subsidy_status = body.decision; c.monthly_limit = body.decision === 'approved' ? +body.monthly_limit : 0; return { ok: true };
+  }],
+
+  ['POST', /^\/bookings$/, ['customer'], ({ u, body: b }) => {
+    const rate = DB.rates.find(r => r.size === +b.size);
+    if (!rate) E(400, 'Invalid tanker size');
+    if (!['commercial', 'subsidised'].includes(b.type)) E(400, 'Invalid booking type');
+    const max = new Date(Date.now() + 30 * 864e5).toISOString().slice(0, 10);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(b.date || '') || b.date < todayStr() || b.date > max) E(400, 'Date must be within the next 30 days');
+    const zone = DB.zones.find(z => z.id === u.zone_id);
+    if (!zone || zone.daily_quota - usedInZone(zone.id, b.date) < rate.size) E(409, `Daily hydrant quota for ${zone?.name || 'your zone'} is full`);
+    if (!Number.isInteger(+b.slot) || b.slot < 0 || b.slot > 23) E(400, 'Invalid time slot');
+    if (b.type === 'subsidised') {
+      if (u.subsidy_status !== 'approved') E(403, 'Subsidy not approved for your account');
+      const n = DB.bookings.filter(x => x.customer_id === u.id && x.type === 'subsidised' && x.date.slice(0, 7) === b.date.slice(0, 7) && !DEAD.includes(x.status)).length;
+      if (n >= u.monthly_limit) E(409, `Monthly subsidised limit (${u.monthly_limit}) reached`);
+    }
+    const h = DB.hydrants.find(h => h.zones.includes(u.zone_id) && h.available && b.slot >= h.open_hour && b.slot < h.close_hour && h.daily_quota - used(h.id, b.date) >= rate.size);
+    if (!h) E(409, 'No hydrant in your zone is open with enough water for that date and time');
+    const bk = { id: ++DB.seq, customer_id: u.id, zone_id: u.zone_id, hydrant_id: h.id, tanker_id: null, driver_id: null, size: rate.size, type: b.type,
+      status: 'Pending', date: b.date, slot: +b.slot, price: rate[b.type], fail_reason: '', history: [] };
+    bk.history.push({ action: 'created', by: u.name, at: new Date().toISOString() }); DB.bookings.push(bk); return { id: bk.id };
+  }],
+  ['GET', /^\/bookings$/, [], ({ u, q }) => {
+    const page = Math.max(1, +q.page || 1), limit = Math.min(50, Math.max(1, +q.limit || 10)), s = (q.q || '').toLowerCase();
+    let rows = DB.bookings.filter(b => owns(u, b) && (!q.status || b.status === q.status) && (!q.type || b.type === q.type) && (!q.date || b.date === q.date))
+      .map(b => { const c = DB.users.find(x => x.id === b.customer_id), t = DB.tankers.find(x => x.id === b.tanker_id), d = DB.users.find(x => x.id === b.driver_id);
+        return { ...b, customer: c.name, address: c.address, phone: c.phone, plate: t?.plate, driver: d?.name }; })
+      .filter(b => !s || [b.customer, b.address, b.plate].some(v => (v || '').toLowerCase().includes(s)));
+    const k = ['date', 'status', 'price', 'id'].includes(q.sort) ? q.sort : 'date', dir = q.order === 'asc' ? 1 : -1;
+    rows.sort((a, b) => (a[k] > b[k] ? 1 : a[k] < b[k] ? -1 : 0) * dir || b.id - a.id);
+    return { rows: rows.slice((page - 1) * limit, page * limit), total: rows.length, page, pages: Math.ceil(rows.length / limit) || 1 };
+  }],
+  ['POST', /^\/bookings\/(\d+)\/(\w+)$/, [], ({ u, m, body }) => {
+    const t = T[m[2]]; if (!t) E(404, 'Unknown action');
+    if (!t[0].includes(u.role)) E(403, `Your role cannot ${m[2]} a booking`);
+    const b = DB.bookings.find(x => x.id == m[1]); if (!b || !owns(u, b)) E(404, 'Booking not found');
+    if (!t[1].includes(b.status)) E(409, `Cannot ${m[2]} a booking that is ${b.status}`);
+    if (['fail', 'dispute', 'resolve'].includes(m[2]) && !(body.note || '').trim()) E(400, 'A reason is required');
+    if (m[2] === 'autoAssign') {
+      const hasClash = (field, id) => DB.bookings.some(x => x.id !== b.id && x.date === b.date && x.slot === b.slot && LIVE.includes(x.status) && x[field] === id);
+      const tn = DB.tankers.find(x => x.hydrant_id === b.hydrant_id && x.size === b.size && x.available && !hasClash('tanker_id', x.id));
+      const availableDrivers = DB.users.filter(x => x.role === 'driver' && x.hydrant_id === b.hydrant_id && !hasClash('driver_id', x.id));
+      const dv = availableDrivers.find(x => x.email === 'pani@driver.pk') || availableDrivers[0];
+      if (!tn || !dv) E(409, 'No available matching tanker and driver for this date and time');
+      b.tanker_id = tn.id; b.driver_id = dv.id;
+    }
+    if (m[2] === 'assign') {
+      const tn = DB.tankers.find(x => x.id === body.tanker_id), dv = DB.users.find(x => x.id === body.driver_id && x.role === 'driver');
+      if (!tn || tn.hydrant_id !== b.hydrant_id) E(400, 'Tanker does not belong to this hydrant');
+      if (!tn.available) E(409, 'Tanker is marked unavailable');
+      if (tn.size !== b.size) E(400, 'Tanker size must match the booking size');
+      if (!dv || dv.hydrant_id !== b.hydrant_id) E(400, 'Driver does not belong to this hydrant');
+      const clash = DB.bookings.some(x => x.id !== b.id && x.date === b.date && x.slot === b.slot && LIVE.includes(x.status) && (x.tanker_id === tn.id || x.driver_id === dv.id));
+      if (clash) E(409, 'Tanker or driver is already booked for that date and slot');
+      b.tanker_id = tn.id; b.driver_id = dv.id;
+    }
+    if (m[2] === 'fail') b.fail_reason = body.note;
+    b.status = t[2]; b.history.push({ action: m[2], by: u.name, note: body.note || '', at: new Date().toISOString() }); return b;
+  }],
+
+  ['GET', /^\/hydrants$/, [], ({ u }) => DB.hydrants.filter(h => u.role !== 'operator' || h.id === u.hydrant_id)
+    .map(h => ({ ...h, zones: h.zones.map(z => DB.zones.find(x => x.id === z).name).join(', '), used_today: used(h.id, todayStr()) }))],
+  ['GET', /^\/tankers$/, ['operator', 'admin'], ({ u }) => DB.tankers.filter(t => u.role !== 'operator' || t.hydrant_id === u.hydrant_id)],
+  ['GET', /^\/drivers$/, ['operator', 'admin'], ({ u }) => DB.users.filter(d => d.role === 'driver' && (u.role !== 'operator' || d.hydrant_id === u.hydrant_id)).map(pub)],
+  ['PATCH', /^\/tankers\/(\d+)$/, ['operator', 'admin'], ({ u, m, body }) => {
+    const t = DB.tankers.find(x => x.id == m[1]); if (!t || (u.role === 'operator' && t.hydrant_id !== u.hydrant_id)) E(404, 'Tanker not found');
+    t.available = body.available ? 1 : 0; return { ok: true };
+  }],
+  ['PATCH', /^\/hydrants\/(\d+)$/, ['operator', 'admin'], ({ u, m, body }) => {
+    const h = DB.hydrants.find(x => x.id == m[1]); if (!h || (u.role === 'operator' && u.hydrant_id !== h.id)) E(404, 'Hydrant not found');
+    if (body.available !== undefined) h.available = body.available ? 1 : 0;
+    if (u.role === 'admin' && body.daily_quota !== undefined) { if (!(+body.daily_quota >= 1000)) E(400, 'Quota must be at least 1000 gallons'); h.daily_quota = +body.daily_quota; }
+    return { ok: true };
+  }],
+  ['PUT', /^\/zones\/(\d+)\/quota$/, ['admin'], ({ m, body }) => {
+    const zone = DB.zones.find(z => z.id == m[1]); if (!zone) E(404, 'Unknown zone');
+    if (!(+body.daily_quota >= 1000)) E(400, 'Quota must be at least 1000 gallons');
+    zone.daily_quota = +body.daily_quota;
+    const total = DB.zones.reduce((sum, item) => sum + Number(item.daily_quota), 0);
+    DB.hydrants.forEach(hydrant => { hydrant.daily_quota = Math.max(Number(hydrant.daily_quota) || 0, total); });
+    return { ok: true };
+  }],
+  ['PUT', /^\/rates\/(\d+)$/, ['admin'], ({ m, body }) => {
+    const r = DB.rates.find(x => x.size == m[1]); if (!r) E(404, 'Unknown size');
+    if (!(body.commercial > 0) || !(body.subsidised > 0) || body.subsidised >= body.commercial) E(400, 'Subsidised rate must be positive and lower than commercial');
+    r.commercial = body.commercial; r.subsidised = body.subsidised; return { ok: true };
+  }],
+  ['GET', /^\/admin\/dashboard$/, ['admin'], () => {
+    const done = DB.bookings.filter(b => ['Delivered', 'Confirmed', 'Resolved'].includes(b.status)), sum = a => a.reduce((s, b) => s + b.price, 0), st = {};
+    DB.bookings.forEach(b => st[b.status] = (st[b.status] || 0) + 1);
+    return { byStatus: Object.entries(st).map(([status, n]) => ({ status, n })),
+      byZone: DB.zones.map(z => { const l = DB.bookings.filter(b => b.zone_id === z.id); return { name: z.name, n: l.length, revenue: sum(l) }; }),
+      revenue: { total: sum(done), subsidised: sum(done.filter(b => b.type === 'subsidised')) },
+      quota: DB.zones.map(zone => ({ id: zone.id, name: zone.name, daily_quota: zone.daily_quota, booked: usedInZone(zone.id, todayStr()) })) };
+  }]
+];
+// Intercept fetch('/api/...'): auth, role check, run handler, roll back DB on any error
+const realFetch = window.fetch.bind(window);
+window.fetch = async (url, o = {}) => {
+  if (!String(url).startsWith('/api/')) return realFetch(url, o);
+  await new Promise(r => setTimeout(r, 120));
+  const U = new URL(url, location.origin), path = U.pathname.slice(4), method = (o.method || 'GET').toUpperCase(), snap = JSON.stringify(DB);
+  const reply = (s, d) => new Response(JSON.stringify(d), { status: s, headers: { 'Content-Type': 'application/json' } });
+  try {
+    for (const [mt, re, roles, fn] of ROUTES) {
+      const m = path.match(re); if (mt !== method || !m) continue;
+      let u = null;
+      if (roles) {
+        const id = +String(o.headers?.Authorization || '').replace('Bearer tok-', '');
+        u = DB.users.find(x => x.id === id); if (!u) return reply(401, { error: 'Please log in' });
+        if (roles.length && !roles.includes(u.role)) return reply(403, { error: 'Your role is not allowed to do this' });
+      }
+      const out = fn({ u, m, q: Object.fromEntries(U.searchParams), body: o.body ? JSON.parse(o.body) : {} });
+      localStorage.setItem('pl_db', JSON.stringify(DB)); return reply(200, out);
+    }
+    return reply(404, { error: 'Not found' });
+  } catch (e) {
+    DB = JSON.parse(snap);  // rollback
+    return e.s ? reply(e.s, { error: e.m }) : reply(500, { error: 'Server error' });
+  }
+};
+
+/* =====================================================================
+   FRONTEND
+   ===================================================================== */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const STATUS = ['Pending', 'Approved', 'Assigned', 'Refilled', 'Filled', 'Arrived', 'Delivered', 'Failed', 'Confirmed', 'Disputed', 'Resolved', 'Rejected', 'Cancelled'];
+const TABS = { customer: ['Book', 'Bookings', 'Subsidy'], officer: ['Bookings', 'Subsidy'], operator: ['Bookings', 'Fleet'], driver: ['Bookings'], admin: ['Dashboard', 'Bookings', 'Config'] };
+let token = localStorage.getItem('pl_token'), me = null, meta = null;
+
+async function api(path, method = 'GET', body) {
+  const r = await fetch('/api' + path, { method, headers: { 'Content-Type': 'application/json', ...(token && { Authorization: 'Bearer ' + token }) }, body: body && JSON.stringify(body) });
+  const d = await r.json().catch(() => ({}));
+  if (!r.ok) { if (r.status === 401 && token) logout(); throw new Error(d.error || 'Request failed'); }
+  return d;
+}
+function toast(m, bad) { const t = $('#toast'); t.textContent = m; t.className = 'show' + (bad ? ' bad' : ''); clearTimeout(toast.t); toast.t = setTimeout(() => t.className = '', 3500); }
+const guard = fn => async (...a) => { try { await fn(...a); } catch (e) { toast(e.message, true); } };
+const money = n => 'Rs ' + Number(n).toLocaleString();
+const hour = h => `${String(h).padStart(2, '0')}:00`;
+
+function logout() { token = null; me = null; localStorage.removeItem('pl_token'); start(); }
+async function start() {
+  meta = await api('/meta');
+  if (token) { try { me = await api('/me'); } catch { return; } }
+  $('#nav').innerHTML = ''; $('#who').innerHTML = '';
+  if (!me) return authView();
+  $('#who').innerHTML = `${esc(me.name)} (${me.role}) <button id="out">Log out</button>`;
+  $('#out').onclick = logout;
+  $('#nav').innerHTML = TABS[me.role].map(t => `<button data-t="${t}">${me.role === 'driver' ? 'My trips' : me.role === 'operator' && t === 'Bookings' ? 'Booking requests' : t}</button>`).join('');
+  $('#nav').onclick = e => e.target.dataset.t && show(e.target.dataset.t);
+  show(TABS[me.role][0]);
+}
+function show(tab) {
+  document.querySelectorAll('#nav button').forEach(b => b.classList.toggle('on', b.dataset.t === tab));
+  $('#main').onclick = $('#main').onsubmit = null;
+  ({ Book: bookView, Bookings: bookingsView, Subsidy: subsidyView, Fleet: fleetView, Dashboard: dashView, Config: configView })[tab]();
+}
+function authView() {
+  $('#main').innerHTML = `
+  <section class="card login-card">
+    <h2 id="loginTitle">Customer login</h2>
+    <div class="login-switch" role="group" aria-label="Choose login type">
+      <button type="button" data-login-role="customer" aria-pressed="true">Customer</button>
+      <button type="button" data-login-role="admin" aria-pressed="false">Admin</button>
+      <button type="button" data-login-role="driver" aria-pressed="false">Driver</button>
+      <button type="button" data-login-role="operator" aria-pressed="false">Operator</button>
+    </div>
+    <form id="login" class="grid" novalidate>
+      <label>Email<input name="email" type="email" required autocomplete="username" placeholder="Enter your email"></label>
+      <label>Password<input name="password" type="password" required autocomplete="current-password" placeholder="Enter your password"></label>
+      <button class="btn" id="loginSubmit">Customer login</button>
+    </form>
+    <p class="err" id="e1" aria-live="polite"></p>
+  </section>
+
+  <section class="card"><h2>New customer</h2>
+    <form id="reg" class="grid" novalidate>
+      <label>Full name<input name="name" required minlength="3"></label>
+      <label>Email<input name="email" type="email" required></label>
+      <label>Password<input name="password" type="password" required minlength="6"></label>
+      <label>CNIC (12345-1234567-1)<input name="cnic" inputmode="numeric" autocomplete="off" maxlength="15" placeholder="12345-1234567-1" required pattern="\\d{5}-\\d{7}-\\d"></label>
+      <label>Phone (0300-1234567)<input name="phone" required pattern="03\\d{2}-?\\d{7}"></label>
+      <label>Address<input name="address" required minlength="5"></label>
+      <label>Zone<select name="zone_id" required><option value="">Choose zone</option>${meta.zones.map(z => `<option value="${z.id}">${esc(z.name)}</option>`).join('')}</select></label>
+      <button class="btn">Create account</button></form>
+    <p class="err" id="e2"></p></section>`;
+  let loginRole = 'customer';
+  document.querySelectorAll('[data-login-role]').forEach(button => button.onclick = () => {
+    loginRole = button.dataset.loginRole;
+    document.querySelectorAll('[data-login-role]').forEach(option => option.setAttribute('aria-pressed', String(option === button)));
+    const roleLabel = loginRole[0].toUpperCase() + loginRole.slice(1);
+    $('#loginTitle').textContent = `${roleLabel} login`;
+    $('#loginSubmit').textContent = `${roleLabel} login`;
+    $('#e1').textContent = '';
+  });
+  $('#login').onsubmit = guard(async e => {
+    e.preventDefault(); const f = e.target;
+    if (!f.checkValidity()) return $('#e1').textContent = 'Enter a valid email and password';
+    const r = await api('/auth/login', 'POST', Object.fromEntries(new FormData(f)));
+    if (r.user.role !== loginRole) return $('#e1').textContent = `This account is not a ${loginRole} account`;
+    token = r.token; localStorage.setItem('pl_token', token); start();
+  });
+  $('#reg').onsubmit = guard(async e => {
+    e.preventDefault(); const f = e.target;
+    if (!f.checkValidity()) { const bad = f.querySelector(':invalid'); return $('#e2').textContent = `Check "${bad.closest('label').firstChild.textContent}": ${bad.validationMessage}`; }
+    $('#e2').textContent = '';
+    await api('/auth/register', 'POST', Object.fromEntries(new FormData(f)));
+    toast('Account created. Please log in.'); f.reset();
+  });
+  const cnicInput = $('#reg [name="cnic"]');
+  cnicInput.addEventListener('input', () => {
+    const digitCountBeforeCaret = cnicInput.value.slice(0, cnicInput.selectionStart).replace(/\D/g, '').length;
+    const digits = cnicInput.value.replace(/\D/g, '').slice(0, 13);
+    const formatted = [digits.slice(0, 5), digits.slice(5, 12), digits.slice(12)].filter(Boolean).join('-');
+    const caret = Math.min(formatted.length, digitCountBeforeCaret + (digitCountBeforeCaret > 5 ? 1 : 0) + (digitCountBeforeCaret > 12 ? 1 : 0));
+    cnicInput.value = formatted;
+    cnicInput.setSelectionRange(caret, caret);
+  });
+}
+
+function bookView() {
+  const today = todayStr();
+  $('#main').innerHTML = `<section class="card"><h2>Book a tanker</h2>
+  <form id="bk" class="grid" novalidate>
+    <label>Tanker size<select name="size" required>${meta.rates.map(r => `<option value="${r.size}">${r.size.toLocaleString()} gallons</option>`).join('')}</select></label>
+    <label>Type<select name="type"><option value="commercial">Commercial (instant)</option><option value="subsidised">Subsidised (needs approval)</option></select></label>
+    <label>Date<input type="date" name="date" min="${today}" required></label>
+    <label>Time slot<select name="slot" required>${[...Array(15)].map((_, i) => `<option value="${i + 6}">${hour(i + 6)}</option>`).join('')}</select></label>
+    <button class="btn">Book tanker</button></form>
+  <p id="price"></p><p class="err" id="e"></p></section>`;
+  const f = $('#bk'), upd = () => { const r = meta.rates.find(x => x.size == f.size.value); $('#price').textContent = 'Price: ' + money(r[f.type.value]); };
+  f.onchange = upd; upd();
+  f.onsubmit = guard(async e => {
+    e.preventDefault();
+    if (!f.date.value) return $('#e').textContent = 'Pick a delivery date';
+    if (f.date.value < today) return $('#e').textContent = 'Date cannot be in the past';
+    $('#e').textContent = '';
+    await api('/bookings', 'POST', { size: +f.size.value, type: f.type.value, date: f.date.value, slot: +f.slot.value });
+    toast('Booking created'); show('Bookings');
+  });
+}
+async function subsidyView() {
+  if (me.role === 'officer') {
+    const list = await api('/subsidy');
+    $('#main').innerHTML = `<section class="card"><h2>Subsidy applications</h2>${list.length ? list.map(u => `
+      <div class="card row" data-id="${u.id}"><div style="flex:1"><b>${esc(u.name)}</b> (${esc(u.cnic)})<br>${esc(u.address)}<br>Proof: ${esc(u.subsidy_proof)}</div>
+      <label>Monthly limit<input type="number" min="1" max="20" value="4" class="lim"></label>
+      <button class="btn" data-d="approved">Approve</button><button class="btn bad" data-d="rejected">Reject</button></div>`).join('') : '<p>No pending applications.</p>'}</section>`;
+    $('#main').onclick = guard(async e => {
+      const d = e.target.dataset.d; if (!d) return; const c = e.target.closest('[data-id]');
+      await api('/subsidy/' + c.dataset.id, 'PATCH', { decision: d, monthly_limit: c.querySelector('.lim').value });
+      toast('Application ' + d); subsidyView();
+    });
+    return;
+  }
+  me = await api('/me'); const s = me.subsidy_status;
+  $('#main').innerHTML = `<section class="card"><h2>Subsidised status</h2><p>Status: <span class="pill">${s}</span>${s === 'approved' ? ` Monthly limit: ${me.monthly_limit} bookings` : ''}</p>
+  ${['none', 'rejected'].includes(s) ? `<form id="sf"><label>Proof details (household registration, hospital or mosque ID)<textarea name="proof" rows="3" required minlength="10"></textarea></label><p class="err" id="e"></p><button class="btn">Apply for subsidy</button></form>` : ''}</section>`;
+  const f = $('#sf'); if (f) f.onsubmit = guard(async e => {
+    e.preventDefault(); if (!f.checkValidity()) return $('#e').textContent = 'Proof must be at least 10 characters';
+    await api('/subsidy', 'POST', { proof: f.proof.value }); toast('Application sent'); subsidyView();
+  });
+}
+
+async function bookingsView() {
+  let page = 1, tankers = [], drivers = [];
+  if (me.role === 'operator') [tankers, drivers] = await Promise.all([api('/tankers'), api('/drivers')]);
+  $('#main').innerHTML = `<section class="card"><h2>${me.role === 'driver' ? 'My trips' : me.role === 'operator' ? 'Booking requests' : 'Bookings'}</h2>
+  <form id="flt" class="row">
+    <label>Search<input name="q" placeholder="name, address, plate"></label>
+    <label>Status<select name="status"><option value="">All</option>${STATUS.map(s => `<option>${s}</option>`).join('')}</select></label>
+    <label>Type<select name="type"><option value="">All</option><option>commercial</option><option>subsidised</option></select></label>
+    <label>Date<input type="date" name="date"></label>
+    <label>Sort by<select name="sort"><option value="date">Date</option><option value="status">Status</option><option value="price">Price</option></select></label>
+    <label>Order<select name="order"><option value="desc">Newest first</option><option value="asc">Oldest first</option></select></label>
+  </form><div id="tbl"></div><div class="row" id="pg"></div></section>`;
+  const load = guard(async () => {
+    const p = new URLSearchParams({ page, limit: 5 });
+    new FormData($('#flt')).forEach((v, k) => v && p.set(k, v));
+    const r = await api('/bookings?' + p);
+    $('#tbl').innerHTML = r.rows.length ? `<table><thead><tr><th>#</th><th>Date</th><th>Customer</th><th>Size</th><th>Type</th><th>Status</th><th>Tanker / driver</th><th>Price</th><th>Actions</th></tr></thead><tbody>${r.rows.map(b => `
+      <tr data-id="${b.id}"><td data-label="#">${b.id}</td><td data-label="Date">${b.date} ${hour(b.slot)}</td>
+      <td data-label="Customer">${esc(b.customer)}<br><small>${esc(b.address)}</small>${me.role === 'driver' && b.phone ? `<br><a href="tel:${b.phone.replace(/\D/g, '')}">Call ${esc(b.phone)}</a>` : me.role === 'operator' && b.phone ? `<br><small>${esc(b.phone)}</small>` : ''}</td>
+      <td data-label="Size">${b.size}</td><td data-label="Type">${b.type}</td>
+      <td data-label="Status"><span class="pill ${b.status}" title="${esc(b.history.map(h => h.action).join(' > '))}">${b.status}</span>${me.role === 'driver' && b.status === 'Assigned' ? '<br><small>Waiting for operator refill</small>' : me.role === 'driver' && b.status === 'Refilled' ? '<br><small>Confirm the tanker is filled to continue</small>' : ''}${b.fail_reason ? '<br><small>' + esc(b.fail_reason) + '</small>' : ''}</td>
+      <td data-label="Tanker / driver">${esc(b.plate || '-')} / ${esc(b.driver || '-')}</td><td data-label="Price">${money(b.price)}</td>
+      <td data-label="Actions"><div class="acts">${actions(b, tankers, drivers)}</div></td></tr>`).join('')}</tbody></table>` : '<p>No bookings match.</p>';
+    $('#pg').innerHTML = `<button class="btn alt" ${page <= 1 ? 'disabled' : ''} id="pv">Previous</button> Page ${r.page} of ${r.pages} (${r.total}) <button class="btn alt" ${page >= r.pages ? 'disabled' : ''} id="nx">Next</button>`;
+    $('#pv').onclick = () => { page--; load(); }; $('#nx').onclick = () => { page++; load(); };
+  });
+  $('#flt').onchange = $('#flt').oninput = () => { page = 1; clearTimeout(bookingsView.t); bookingsView.t = setTimeout(load, 250); };
+  $('#flt').onsubmit = e => e.preventDefault();
+  $('#main').onclick = guard(async e => {
+    const a = e.target.dataset.a; if (!a) return;
+    const tr = e.target.closest('tr'), body = {};
+    if (a === 'assign') { body.tanker_id = +tr.querySelector('.tk').value; body.driver_id = +tr.querySelector('.dv').value; }
+    if (['fail', 'dispute', 'resolve'].includes(a)) { body.note = prompt(a === 'fail' ? 'Reason (house locked, road blocked...)' : a === 'dispute' ? 'Why are you disputing?' : 'Resolution note'); if (!body.note) return; }
+    await api(`/bookings/${tr.dataset.id}/${a}`, 'POST', body); toast('Done'); load();
+  });
+  load();
+}
+function actions(b, tankers, drivers) {  // buttons depend on role AND status
+  const B = (a, t, c = '') => `<button class="btn ${c}" data-a="${a}">${t}</button>`, s = b.status;
+  if (me.role === 'customer') return (['Pending', 'Approved', 'Assigned'].includes(s) ? B('cancel', 'Cancel', 'bad') : '') + (s === 'Delivered' ? B('confirm', 'Confirm') + B('dispute', 'Dispute', 'alt') : '');
+  if (me.role === 'officer') return (s === 'Pending' ? B('approve', 'Approve') + B('reject', 'Reject', 'bad') : '') + (s === 'Disputed' ? B('resolve', 'Resolve') : '');
+  if (me.role === 'operator') {
+    if (s === 'Pending') return B('autoAssign', 'Approve & assign');
+    if (s === 'Approved') return `<select class="tk" aria-label="Tanker">${tankers.filter(t => t.available && t.size === b.size).map(t => `<option value="${t.id}">${esc(t.plate)}</option>`).join('') || '<option value="">none free</option>'}</select>
+      <select class="dv" aria-label="Driver">${drivers.map(d => `<option value="${d.id}">${esc(d.name)}</option>`).join('')}</select>${B('assign', 'Assign')}`;
+    return s === 'Assigned' ? B('fill', 'Mark tanker refilled') : '';
+  }
+  if (me.role === 'driver') return (s === 'Refilled' ? B('confirmFill', 'Confirm filled') : '') + (s === 'Filled' ? B('arrive', 'Arrived') : '') + (s === 'Arrived' ? B('deliver', 'Delivered') : '') + (['Filled', 'Arrived'].includes(s) ? B('fail', 'Failed', 'bad') : '');
+  return '';
+}
+
+async function fleetView() {
+  const [h, t] = await Promise.all([api('/hydrants'), api('/tankers')]), hy = h[0];
+  $('#main').innerHTML = `<section class="card"><h2>${esc(hy.name)}</h2>
+    <p>Quota today: ${hy.used_today} / ${hy.daily_quota} gallons. Hours ${hour(hy.open_hour)} to ${hour(hy.close_hour)}. Zones: ${esc(hy.zones)}</p>
+    <span class="bar"><i style="width:${Math.min(100, hy.used_today / hy.daily_quota * 100)}%"></i></span><br>
+    <button class="btn ${hy.available ? 'bad' : ''}" id="hy">${hy.available ? 'Mark hydrant unavailable' : 'Mark hydrant available'}</button></section>
+    <section class="card"><h2>Tankers</h2><table><thead><tr><th>Plate</th><th>Size</th><th>Status</th><th></th></tr></thead><tbody>${t.map(x => `
+    <tr><td data-label="Plate">${esc(x.plate)}</td><td data-label="Size">${x.size}</td><td data-label="Status">${x.available ? 'Available' : 'Unavailable'}</td>
+    <td><button class="btn alt" data-id="${x.id}" data-av="${x.available ? 0 : 1}">${x.available ? 'Mark unavailable' : 'Mark available'}</button></td></tr>`).join('')}</tbody></table></section>`;
+  $('#hy').onclick = guard(async () => { await api('/hydrants/' + hy.id, 'PATCH', { available: !hy.available }); fleetView(); });
+  $('#main').onclick = guard(async e => { if (e.target.dataset.id) { await api('/tankers/' + e.target.dataset.id, 'PATCH', { available: +e.target.dataset.av }); fleetView(); } });
+}
+
+async function dashView() {
+  const d = await api('/admin/dashboard');
+  $('#main').innerHTML = `<div class="stats">
+    <div class="card stat"><b>${money(d.revenue.total)}</b>Revenue from completed trips</div>
+    <div class="card stat"><b>${money(d.revenue.subsidised)}</b>of which subsidised</div>
+    ${d.byStatus.map(s => `<div class="card stat"><b>${s.n}</b><span class="pill ${s.status}">${s.status}</span></div>`).join('')}</div>
+    <section class="card"><h2>Hydrant quota by area today</h2><div class="grid">${d.quota.map(q => {
+      const available = Math.max(0, q.daily_quota - q.booked);
+      const fill = q.daily_quota > 0 ? Math.min(100, available / q.daily_quota * 100) : 0;
+      return `<div><b>${esc(q.name)}</b><p>${available.toLocaleString()} / ${q.daily_quota.toLocaleString()} gal available<br><small>${q.booked.toLocaleString()} gal booked</small></p><span class="bar" role="img" aria-label="${available} gallons available of ${q.daily_quota}"><i style="width:${fill}%"></i></span></div>`;
+    }).join('')}</div></section>
+    <section class="card"><h2>Bookings by zone</h2><table><thead><tr><th>Zone</th><th>Bookings</th><th>Value</th></tr></thead><tbody>${d.byZone.map(z => `<tr><td data-label="Zone">${esc(z.name)}</td><td data-label="Bookings">${z.n}</td><td data-label="Value">${money(z.revenue)}</td></tr>`).join('')}</tbody></table></section>`;
+}
+async function configView() {
+  const [d, m] = await Promise.all([api('/admin/dashboard'), api('/meta')]); meta = m;
+  $('#main').innerHTML = `<section class="card"><h2>Rates</h2>${m.rates.map(r => `<form class="row rate" data-size="${r.size}">
+    <b>${r.size} gal</b><label>Commercial<input type="number" name="commercial" min="1" value="${r.commercial}" required></label>
+    <label>Subsidised<input type="number" name="subsidised" min="1" value="${r.subsidised}" required></label><button class="btn">Save</button></form>`).join('')}</section>
+    <section class="card"><h2>Daily hydrant quotas by area</h2>${d.quota.map(zone => `<form class="row quota" data-id="${zone.id}"><b>${esc(zone.name)}</b>
+    <span>Booked today: ${zone.booked.toLocaleString()} gal</span><label>Daily quota (gal)<input type="number" name="q" min="1000" value="${zone.daily_quota}" required></label><button class="btn">Save</button></form>`).join('')}</section>`;
+  $('#main').onsubmit = guard(async e => {
+    e.preventDefault(); const f = e.target;
+    if (f.classList.contains('rate')) await api('/rates/' + f.dataset.size, 'PUT', { commercial: +f.commercial.value, subsidised: +f.subsidised.value });
+    else await api('/zones/' + f.dataset.id + '/quota', 'PUT', { daily_quota: +f.q.value });
+    toast('Saved');
+  });
+}
+guard(start)();
+</script>
+</body>
+</html>
+
